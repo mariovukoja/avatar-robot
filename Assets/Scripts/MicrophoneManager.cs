@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using System.Text;
 
 public class MicrophoneManager : MonoBehaviour
 {
@@ -17,11 +18,13 @@ public class MicrophoneManager : MonoBehaviour
     public string[] talkingAnimStates = { "Talking 1", "Talking 2", "Talking 3" };
     public int TalkingAnimIndex = 0;
     public InputField ServerUriInputField;
+    public InputField RobotUriInputField;
     public Button recordButton;
 
     public Button deleteCommands;
     public Button sendCommands;
     public string Server_uri = "http://127.0.0.1:5005";
+    public string Robot_uri = "http://127.0.0.1:5000";
     public bool wasPlaying = false;
     public Color originalButtonColor;
     public Text errorDisplay;
@@ -57,6 +60,12 @@ public class MicrophoneManager : MonoBehaviour
             ServerUriInputField.onValueChanged.AddListener(OnServerUriChanged);
         }
 
+        if (RobotUriInputField != null)
+        {
+            RobotUriInputField.text = Robot_uri;
+            RobotUriInputField.onValueChanged.AddListener(OnRobotUriChanged);
+        }
+
         if (recordButton != null)
         {
             var buttonImage = recordButton.GetComponent<Image>();
@@ -90,6 +99,12 @@ public class MicrophoneManager : MonoBehaviour
     {
         Server_uri = newUri;
         Debug.Log("Server URI updated to: " + Server_uri);
+    }
+
+    private void OnRobotUriChanged(string newUri)
+    {
+        Robot_uri = newUri;
+        Debug.Log("Server URI updated to: " + Robot_uri);
     }
 
     private void HandleAudioStopped()
@@ -163,7 +178,11 @@ public class MicrophoneManager : MonoBehaviour
             var buttonImage = recordButton.GetComponent<Image>();
             if (buttonImage != null)
             {
-                buttonImage.color = Color.yellow;
+                Color newColor;
+                if (ColorUtility.TryParseHtmlString("#FECE2D", out newColor))
+                {
+                    buttonImage.color = newColor;
+                }
             }
             isRecording = true;
             Debug.Log("Starting microphone recording...");
@@ -221,26 +240,43 @@ public class MicrophoneManager : MonoBehaviour
     {
         switch (action)
         {
-            case "MoveForward":
-            case "MoveBackwards":
+            case "forward":
                 {
                     float speed = parameters["speed"]?.ToObject<float>() ?? 0f;
                     float duration = parameters["duration"]?.ToObject<float>() ?? 0f;
                     string message = $"{action}(speed: {speed}, duration: {duration})";
-                    commandsToSend += message + ";";
+                    commandsToSend += $"print(\"Go forward\")\nforward(2.0, 50.0)\n";
                     commandsToSendcnt++;
                     chatUI.AddMessage(message);
                     break;
                 }
-            case "TurnLeft":
-            case "TurnRight":
+            case "back":
                 {
+                    float speed = parameters["speed"]?.ToObject<float>() ?? 0f;
                     float duration = parameters["duration"]?.ToObject<float>() ?? 0f;
-                    string message = $"{action}(duration: {duration})";
-                    commandsToSend += message + ";";
+                    string message = $"{action}(speed: {speed}, duration: {duration})";
+                    commandsToSend += $"print(\"Go back\")\nback({duration}, {speed})\n";
                     commandsToSendcnt++;
-                    Debug.Log(commandsToSend);
-                    Debug.Log(commandsToSendcnt);
+                    chatUI.AddMessage(message);
+                    break;
+                }
+            case "turn_left":
+                {
+                    float speed = parameters["speed"]?.ToObject<float>() ?? 0f;
+                    float duration = parameters["duration"]?.ToObject<float>() ?? 0f;
+                    string message = $"{action}(speed: {speed}, duration: {duration})";
+                    commandsToSend += $"print(\"Go left\")\nturn_left({duration}, {speed})\n";
+                    commandsToSendcnt++;
+                    chatUI.AddMessage(message);
+                    break;
+                }
+            case "turn_right":
+                {
+                    float speed = parameters["speed"]?.ToObject<float>() ?? 0f;
+                    float duration = parameters["duration"]?.ToObject<float>() ?? 0f;
+                    string message = $"{action}(speed: {speed}, duration: {duration})";
+                    commandsToSend += $"print(\"Go right\")\nturn_right({duration}, {speed})\n";
+                    commandsToSendcnt++;
                     chatUI.AddMessage(message);
                     break;
                 }
@@ -386,8 +422,6 @@ public class MicrophoneManager : MonoBehaviour
     {
         Debug.Log("Slanje naredbi");
         chatUI.ClearMessages();
-        commandsToSend = string.Empty;
-        commandsToSendcnt = 0;
         infoDisplay.text = "INFO: Sending commands to the robot!";
         sendCommands.interactable = false;
         recordButton.interactable = true;
@@ -397,7 +431,36 @@ public class MicrophoneManager : MonoBehaviour
         {
             buttonImage.color = originalButtonColor;
         }
+        StartCoroutine(PostCommandsCoroutine(commandsToSend));
+        commandsToSend = string.Empty;
+        commandsToSendcnt = 0;
         StartCoroutine(ClearErrorAfterDelay(5));
+    }
+    private IEnumerator PostCommandsCoroutine(string commands)
+    {
+        string json = JsonUtility.ToJson(new CommandPayload { code = commands });
+        UnityWebRequest request = new UnityWebRequest(Robot_uri, "POST");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("POST successful: " + request.downloadHandler.text);
+        }
+        else
+        {
+            Debug.LogError("POST failed: " + request.error);
+        }
+    }
+
+    [System.Serializable]
+    public class CommandPayload
+    {
+        public string code;
     }
 
     public void DeleteCommands()
