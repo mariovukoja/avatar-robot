@@ -155,7 +155,6 @@ public class MicrophoneManager : MonoBehaviour
         if (isRecording)
         {
             Text buttonText = recordButton.GetComponentInChildren<Text>();
-            buttonText.text = "Record";
             isRecording = false;
             Debug.Log("Stopping microphone recording...");
             StopMicrophone();
@@ -174,7 +173,6 @@ public class MicrophoneManager : MonoBehaviour
             sendCommands.interactable = false;
             deleteCommands.interactable = false;
             Text buttonText = recordButton.GetComponentInChildren<Text>();
-            buttonText.text = "Stop";
             var buttonImage = recordButton.GetComponent<Image>();
             if (buttonImage != null)
             {
@@ -244,7 +242,7 @@ public class MicrophoneManager : MonoBehaviour
                 {
                     float speed = parameters["speed"]?.ToObject<float>() ?? 0f;
                     float duration = parameters["duration"]?.ToObject<float>() ?? 0f;
-                    string message = $"{action}(speed: {speed}, duration: {duration})";
+                    string message = $"> {action}(speed: {speed}, duration: {duration})";
                     commandsToSend += $"print(\"Go forward\")\nforward(2.0, 50.0)\n";
                     commandsToSendcnt++;
                     chatUI.AddMessage(message);
@@ -254,7 +252,7 @@ public class MicrophoneManager : MonoBehaviour
                 {
                     float speed = parameters["speed"]?.ToObject<float>() ?? 0f;
                     float duration = parameters["duration"]?.ToObject<float>() ?? 0f;
-                    string message = $"{action}(speed: {speed}, duration: {duration})";
+                    string message = $"> {action}(speed: {speed}, duration: {duration})";
                     commandsToSend += $"print(\"Go back\")\nback({duration}, {speed})\n";
                     commandsToSendcnt++;
                     chatUI.AddMessage(message);
@@ -264,7 +262,7 @@ public class MicrophoneManager : MonoBehaviour
                 {
                     float speed = parameters["speed"]?.ToObject<float>() ?? 0f;
                     float duration = parameters["duration"]?.ToObject<float>() ?? 0f;
-                    string message = $"{action}(speed: {speed}, duration: {duration})";
+                    string message = $"> {action}(speed: {speed}, duration: {duration})";
                     commandsToSend += $"print(\"Go left\")\nturn_left({duration}, {speed})\n";
                     commandsToSendcnt++;
                     chatUI.AddMessage(message);
@@ -274,7 +272,7 @@ public class MicrophoneManager : MonoBehaviour
                 {
                     float speed = parameters["speed"]?.ToObject<float>() ?? 0f;
                     float duration = parameters["duration"]?.ToObject<float>() ?? 0f;
-                    string message = $"{action}(speed: {speed}, duration: {duration})";
+                    string message = $"> {action}(speed: {speed}, duration: {duration})";
                     commandsToSend += $"print(\"Go right\")\nturn_right({duration}, {speed})\n";
                     commandsToSendcnt++;
                     chatUI.AddMessage(message);
@@ -283,7 +281,7 @@ public class MicrophoneManager : MonoBehaviour
             case "FollowLine":
                 {
                     string color = parameters["color"]?.ToString();
-                    string message = $"{action}(color: {color})";
+                    string message = $"> {action}(color: {color})";
                     commandsToSend += message + ";";
                     commandsToSendcnt++;
                     chatUI.AddMessage(message);
@@ -292,7 +290,7 @@ public class MicrophoneManager : MonoBehaviour
             case "LookForObject":
                 {
                     string description = parameters["description"]?.ToString();
-                    string message = $"{action}(description: {description})";
+                    string message = $"> {action}(description: {description})";
                     commandsToSend += message + ";";
                     commandsToSendcnt++;
                     chatUI.AddMessage(message);
@@ -300,7 +298,7 @@ public class MicrophoneManager : MonoBehaviour
                 }
             case "Abort":
                 {
-                    string message = $"{action}";
+                    string message = $"> {action}";
                     commandsToSend += message + ";";
                     commandsToSendcnt++;
                     chatUI.AddMessage(message);
@@ -311,7 +309,7 @@ public class MicrophoneManager : MonoBehaviour
                     string left = parameters["left"]?.ToString();
                     string right = parameters["right"]?.ToString();
                     string duration = parameters["duration"]?.ToString();
-                    string message = $"{action}(left: {left}, right: {right}, duration: {duration})";
+                    string message = $"> {action}(left: {left}, right: {right}, duration: {duration})";
                     commandsToSend += message + ";";
                     commandsToSendcnt++;
                     chatUI.AddMessage(message);
@@ -319,7 +317,7 @@ public class MicrophoneManager : MonoBehaviour
                 }
             case "LookForPerson":
                 {
-                    string message = $"{action}";
+                    string message = $"> {action}";
                     commandsToSend += message + ";";
                     commandsToSendcnt++;
                     chatUI.AddMessage(message);
