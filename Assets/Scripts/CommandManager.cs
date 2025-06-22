@@ -13,7 +13,6 @@ public class CommandManager : MonoBehaviour
 
     public void AddMessage(string text, int index)
     {
-        Debug.Log("dodana " + text + " na indexu: " + index);
         GameObject newMessage = Instantiate(messagePrefab, contentPanel);
         newMessage.SetActive(true);
 

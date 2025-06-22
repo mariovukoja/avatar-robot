@@ -116,10 +116,6 @@ public class MorphTargetController : MonoBehaviour
 
                 ApplyEmotion(emotionKey, score);
             }
-            else
-            {
-                Debug.LogWarning("No primary emotion found in the received data.");
-            }
         }
         catch (Newtonsoft.Json.JsonReaderException jsonEx)
         {
@@ -141,10 +137,6 @@ public class MorphTargetController : MonoBehaviour
                 SetBlendShapeWeight(morph.Key, weight);
             }
         }
-        else
-        {
-            Debug.LogWarning($"No mappings found for emotion: {emotion}");
-        }
     }
 
     private void SetBlendShapeWeight(string morph, float weight)
@@ -153,10 +145,6 @@ public class MorphTargetController : MonoBehaviour
         if (index != -1)
         {
             skinnedMeshRenderer.SetBlendShapeWeight(index, Mathf.Clamp(weight, 0f, 1f));
-        }
-        else
-        {
-            Debug.LogWarning($"Blend shape for morph '{morph}' not found.");
         }
     }
 
@@ -226,7 +214,6 @@ public class MorphTargetController : MonoBehaviour
     {
         if (skinnedMeshRenderer == null)
         {
-            Debug.LogError("skinnedMeshRenderer is null. Cannot reset blend shapes.");
             return; 
         }
 

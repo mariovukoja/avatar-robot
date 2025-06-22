@@ -184,7 +184,6 @@ public class MicrophoneManager : MonoBehaviour
         {
             Text buttonText = recordButton.GetComponentInChildren<Text>();
             isRecording = false;
-            Debug.Log("Stopping microphone recording...");
             StopMicrophone();
             ServerUriInputField.interactable = false;
             recordButton.interactable = false;
@@ -214,14 +213,12 @@ public class MicrophoneManager : MonoBehaviour
             }
             infoDisplay.text = "INFO: Recording!";
             isRecording = true;
-            Debug.Log("Starting microphone recording...");
             InitMicrophone();
         }
     }
 
     public void OnAudioRecorded(string base64Audio)
     {
-        Debug.Log("Received Base64 audio from JavaScript!");
         var payload = new
         {
             base64 = base64Audio,
@@ -358,8 +355,6 @@ public class MicrophoneManager : MonoBehaviour
                 break;
             }
         }
-        Debug.Log(commandsToSend);
-        Debug.Log(commandsToSendcnt);
     }
 
     IEnumerator GetAudio(string uri, JObject response)
@@ -467,7 +462,6 @@ public class MicrophoneManager : MonoBehaviour
 
     public void SendCommands()
     {
-        Debug.Log("Slanje naredbi");
         chatUI.ClearMessages();
         infoDisplay.text = "INFO: Sending commands to the robot!";
         sendCommands.interactable = false;
