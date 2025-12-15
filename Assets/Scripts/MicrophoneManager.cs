@@ -35,6 +35,7 @@ public class MicrophoneManager : MonoBehaviour
     public Text infoDisplay;
     public Text commandsDebug;
     public string Context { get; set; }
+    public string userSaid { get; set; }
     public CommandManager chatUI;
     public List<string?> commandsToSend;
 
@@ -52,8 +53,9 @@ public class MicrophoneManager : MonoBehaviour
     void Start()
     {
         Context = "";
+        userSaid = "";
         commandsToSendcnt = 0;
-        commandsToSend = new List<string?> { null, null, null, null };
+        commandsToSend = new List<string?> { null, null, null, null, null, null, null, null, null, null };
         audioSource = GetComponent<AudioSource>();
         audioSource.Stop();
         animator.SetBool("IsTalking", false);
@@ -109,7 +111,7 @@ public class MicrophoneManager : MonoBehaviour
             sendCommandsText.color = Color.gray;
             sendCommandsPlay.color = Color.gray;
         }
-        else if (commandsToSendcnt > 0 && commandsToSendcnt < 4 && isFull && !audioSource.isPlaying)
+        else if (commandsToSendcnt > 0 && commandsToSendcnt < 10 && isFull && !audioSource.isPlaying)
         {
             recordButton.interactable = true;
             var buttonImage = recordButton.GetComponent<Image>();
@@ -142,7 +144,7 @@ public class MicrophoneManager : MonoBehaviour
         }
         if (recordButton != null)
         {
-            if (commandsToSendcnt == 4)
+            if (commandsToSendcnt == 10)
             {
                 recordButton.interactable = false;
                 sendCommands.interactable = true;
@@ -155,7 +157,7 @@ public class MicrophoneManager : MonoBehaviour
                     buttonImage.color = Color.black;
                 }
                 isFull = true;
-                infoDisplay.text = "INFO: Maximum of 4 commands can be sent in one instance!";
+                infoDisplay.text = "INFO: Maximum of 10 commands can be sent in one instance!";
                 StartCoroutine(ClearErrorAfterDelay(5));
             }
             else
@@ -243,6 +245,7 @@ public class MicrophoneManager : MonoBehaviour
             {
                 JObject response = JObject.Parse(www.downloadHandler.text);
                 Context = response["context"].ToString();
+                userSaid = response["userSaid"].ToString();
                 if (response != null && response["commands"] != null)
                 {
                     JArray commandsArray = response["commands"] as JArray;
@@ -265,6 +268,7 @@ public class MicrophoneManager : MonoBehaviour
     void ParseAction(string action, JObject parameters)
     {
         string command = "";
+        if (commandsToSendcnt >= 10) return;
         switch (action)
         {
             case "forward":
@@ -347,7 +351,7 @@ public class MicrophoneManager : MonoBehaviour
             default:
                 break;
         }
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 10; i++)
         {
             if (commandsToSend[i] == null)
             {
@@ -400,7 +404,7 @@ public class MicrophoneManager : MonoBehaviour
                 string jsonString = JsonConvert.SerializeObject(payload);
                 JObject json = JObject.Parse(jsonString);
                 MTC.AdjustMorphTargets(json);
-                infoDisplay.text = "INFO: You said: " + Context;
+                infoDisplay.text = "INFO: You said: " + userSaid;
 
                 Debug.Log("Audio is playing.");
                 yield return null;
@@ -476,7 +480,7 @@ public class MicrophoneManager : MonoBehaviour
         }
         StartCoroutine(PostCommandsCoroutine());
         commandsToSend.Clear();
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 10; i++)
         {
             commandsToSend.Add(null);
         }
