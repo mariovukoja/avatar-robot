@@ -3,8 +3,8 @@ Virtualni avatar za upravljanje robotom na ROS2 platformi.
 
 Rad u sklopu MetaRoboLearn projekta.
 
-Robot omogućuje čovjekoliku interakciju, kao i upravljanje robotom, s obzirom da koristi veliki jezični model.
-Cilj je bio omogućiti korištenje prirodnog jezika za upravljanje robotom u obrazovne svrhe.
+Avatar omogućuje čovjekoliku interakciju, kao i upravljanje robotom, s obzirom da koristi veliki jezični model.
+
 
 Nakon uspješnog pokretanja aplikacije, za početak interakcije s avatarom, korisnik mora kliknuti na tipku mikrofona na ekranu,
 nakon čega započinje snimanje. Nakon što je korisnik izgovorio sve što je htio, pritiskom na mikrofon on zaustavlja
