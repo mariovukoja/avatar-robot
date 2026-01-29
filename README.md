@@ -80,6 +80,7 @@ pip install TTS
 ### STT
 * skinuti željeni model weight s [poveznice](https://huggingface.co/ggerganov/whisper.cpp/tree/main) (preporuka koristiti ggml-base.bin)
 * staviti .bin datoteku u venv direktorij
+* model se bira kao varijabla u "server-dipl.py"
 
 * više o veličinama modela na [OpenAi readme](https://github.com/openai/whisper#available-models-and-languages)
 
@@ -90,6 +91,7 @@ pip install TTS
 * **tts_models/en/ljspeech/glow-tts** --> verzija ženskastog/mješovitog TTS-a, najbolje zbog kombinacije kvalitete zvuka i brzine
 * **tts_models/en/jenny/jenny** --> lijepi, ali spor engleski ženski glas
 * **tts_models/en/blizzard2013/capacitron-t2-c50** --> radi s emocijama, ali ne dobro baš
+* model se bira kao varijabla u "server-dipl.py"
 
 ## Build
 * za buildanje WebGl verzije unutar Unity-a: File > Build Settings i izabrati WebGL kao ciljnu platformu, pokrenuti Build i zatim ga poslužiti kao statične datoteke (npr. python HTTP server)
