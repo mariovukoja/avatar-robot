@@ -1,4 +1,4 @@
-# Avatar-robot
+# Virtualni avatar za upravljanje robotom
 Virtualni avatar za upravljanje robotom na ROS2 platformi.
 
 Rad u sklopu MetaRoboLearn projekta.
